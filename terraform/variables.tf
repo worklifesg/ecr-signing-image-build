@@ -35,3 +35,9 @@ variable "admin_role_name" {
   sensitive   = true
   # No default value to prevent committing sensitive data
 }
+
+variable "infra_repo" {
+  description = "GitHub repository for the Infrastructure (format: org/repo) that will deploy Terraform"
+  type        = string
+  default     = "worklifesg/infrastructure-repo"
+}
