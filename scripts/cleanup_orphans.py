@@ -34,29 +34,49 @@ def get_all_tags(ecr_client, repo_name):
         sys.exit(1)
     return tags
 
+def get_repositories(ecr_client, namespace):
+    """
+    Returns a list of repository names that start with the given namespace.
+    """
+    repos = []
+    paginator = ecr_client.get_paginator('describe_repositories')
+    for page in paginator.paginate():
+        for repo in page['repositories']:
+            if repo['repositoryName'].startswith(namespace):
+                repos.append(repo['repositoryName'])
+    return repos
+
 def main():
     region = os.environ.get('AWS_REGION', 'us-east-1')
-    image_repo = os.environ.get('ECR_IMAGE_REPO')
+    ecr_namespace = os.environ.get('ECR_NAMESPACE')
     sig_repo = os.environ.get('ECR_SIG_REPO')
     dry_run = os.environ.get('DRY_RUN', 'false').lower() == 'true'
 
-    if not image_repo or not sig_repo:
-        print("Error: ECR_IMAGE_REPO and ECR_SIG_REPO environment variables must be set.")
+    if not ecr_namespace or not sig_repo:
+        print("Error: ECR_NAMESPACE and ECR_SIG_REPO environment variables must be set.")
         sys.exit(1)
 
     ecr = boto3.client('ecr', region_name=region)
 
     print(f"--- Starting Cleanup in {region} ---")
-    print(f"Image Repo: {image_repo}")
+    print(f"Namespace:  {ecr_namespace}")
     print(f"Sig Repo:   {sig_repo}")
     print(f"Dry Run:    {dry_run}")
 
-    # 1. Get valid digests from the Image Repo
-    print("Fetching valid image digests...")
-    valid_digests = get_all_images(ecr, image_repo)
-    print(f"Found {len(valid_digests)} valid images.")
+    # 1. Find all repos in namespace
+    print("Finding repositories in namespace...")
+    repos = get_repositories(ecr, ecr_namespace)
+    print(f"Found {len(repos)} repositories: {repos}")
 
-    # 2. Get all tags from the Signature Repo
+    # 2. Get valid digests from ALL App Repos
+    valid_digests = set()
+    for repo in repos:
+        print(f"Fetching digests from {repo}...")
+        valid_digests.update(get_all_images(ecr, repo))
+    
+    print(f"Found {len(valid_digests)} unique valid image digests across all repos.")
+
+    # 3. Get all tags from the Signature Repo
     print("Fetching signature tags...")
     sig_tags = get_all_tags(ecr, sig_repo)
     print(f"Found {len(sig_tags)} signatures/attestations.")

@@ -16,7 +16,7 @@ permissions:
 
 env:
   AWS_REGION: us-east-1
-  ECR_IMAGE_REPO: ${{ vars.ECR_IMAGE_REPO }}
+  ECR_NAMESPACE: ${{ vars.ECR_IMAGE_REPO }}
   ECR_SIG_REPO: ${{ vars.ECR_SIG_REPO }}
 
 jobs:
