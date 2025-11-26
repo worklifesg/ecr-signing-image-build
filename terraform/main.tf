@@ -8,7 +8,7 @@ terraform {
 
   # Backend configuration will be passed via CLI in GitHub Actions
   # or via a backend.conf file locally.
-  backend "s3" {}
+  # backend "s3" {}
 }
 
 provider "aws" {

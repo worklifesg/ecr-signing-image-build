@@ -19,18 +19,57 @@ resource "aws_ecr_lifecycle_policy" "image_policy" {
   repository = aws_ecr_repository.image_repo.name
 
   policy = jsonencode({
-    rules = [{
-      rulePriority = 1
-      description  = "Keep last 30 images"
-      selection = {
-        tagStatus   = "any"
-        countType   = "imageCountMoreThan"
-        countNumber = 30
+    rules = [
+      {
+        rulePriority = 1
+        description  = "Expire untagged images older than 1 day"
+        selection = {
+          tagStatus   = "untagged"
+          countType   = "sinceImagePushed"
+          countUnit   = "days"
+          countNumber = 1
+        }
+        action = {
+          type = "expire"
+        }
+      },
+      {
+        rulePriority = 2
+        description  = "Keep last 30 CI builds (prefixed with ci-)"
+        selection = {
+          tagStatus     = "tagged"
+          tagPrefixList = ["ci-"]
+          countType     = "imageCountMoreThan"
+          countNumber   = 30
+        }
+        action = {
+          type = "expire"
+        }
       }
-      action = {
-        type = "expire"
+    ]
+  })
+}
+
+# Lifecycle Policy for Signatures
+resource "aws_ecr_lifecycle_policy" "signature_policy" {
+  repository = aws_ecr_repository.signature_repo.name
+
+  policy = jsonencode({
+    rules = [
+      {
+        rulePriority = 1
+        description  = "Expire untagged signatures older than 1 day"
+        selection = {
+          tagStatus   = "untagged"
+          countType   = "sinceImagePushed"
+          countUnit   = "days"
+          countNumber = 1
+        }
+        action = {
+          type = "expire"
+        }
       }
-    }]
+    ]
   })
 }
 

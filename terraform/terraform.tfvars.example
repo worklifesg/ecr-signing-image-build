@@ -1,5 +1,0 @@
-# Rename this file to terraform.tfvars and fill in your values
-# This file is ignored by git to keep your secrets safe
-
-admin_role_name = "aws-reserved/sso.amazonaws.com/AWSReservedSSO_AdministratorAccess_xxxxxxxxxxxxxx"
-github_repo     = "my-org/app-repo" # The Application Repository
