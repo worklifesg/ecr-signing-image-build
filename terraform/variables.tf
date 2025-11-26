@@ -13,7 +13,7 @@ variable "ecr_namespace" {
 variable "repository_list" {
   description = "List of application names to create repositories for"
   type        = list(string)
-  default     = ["trino"]
+  default     = ["trino", "jenkins"]
 }
 
 variable "signature_repo_name" {
@@ -22,11 +22,11 @@ variable "signature_repo_name" {
   default     = "my-app-signatures"
 }
 
-variable "github_repos" {
-  description = "List of GitHub repositories (format: org/repo) that are allowed to push/sign images"
-  type        = list(string)
-  # Update this with your actual app repos
-  default     = ["worklifesg/source-image-docker"]
+variable "github_repo" {
+  description = "GitHub repository for the Application (format: org/repo) that will push/sign images"
+  type        = string
+  # Update this with your actual app repo
+  default     = "worklifesg/source-image-docker"
 }
 
 variable "secondary_region" {
