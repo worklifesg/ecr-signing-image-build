@@ -37,7 +37,7 @@ jobs:
           
           if [[ -z "$BUCKET_NAME" ]]; then
             echo "Error: TF_STATE_BUCKET secret is not set."
-            exit 1
+            exit 1f
           fi
 
           if aws s3api head-bucket --bucket "$BUCKET_NAME" 2>/dev/null; then
