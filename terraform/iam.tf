@@ -48,20 +48,17 @@ resource "aws_iam_role_policy" "signing_policy" {
           "ecr:CompleteLayerUpload",
           "ecr:PutImage"
         ]
-        Resource = concat(
-          values(aws_ecr_repository.app_repos)[*].arn,
-          [aws_ecr_repository.signature_repo.arn]
-        )
+        Resource = [
+          aws_ecr_repository.signature_repo.arn,
+          "arn:aws:ecr:*:*:repository/${var.ecr_namespace}*"
+        ]
       },
       {
         Effect = "Allow"
         Action = [
-          "ecr:InitiateLayerUpload",
-          "ecr:UploadLayerPart",
-          "ecr:CompleteLayerUpload",
-          "ecr:PutImage"
+          "ecr:CreateRepository"
         ]
-        Resource = "arn:aws:ecr:*:*:repository/${var.ecr_namespace}/*"
+        Resource = "arn:aws:ecr:*:*:repository/${var.ecr_namespace}*"
       },
       {
         Effect   = "Allow"
