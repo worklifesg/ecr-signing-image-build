@@ -54,6 +54,16 @@ resource "aws_iam_role_policy" "signing_policy" {
         )
       },
       {
+        Effect = "Allow"
+        Action = [
+          "ecr:InitiateLayerUpload",
+          "ecr:UploadLayerPart",
+          "ecr:CompleteLayerUpload",
+          "ecr:PutImage"
+        ]
+        Resource = "arn:aws:ecr:*:*:repository/${var.ecr_namespace}/*"
+      },
+      {
         Effect   = "Allow"
         Action   = "ecr:GetAuthorizationToken"
         Resource = "*"
