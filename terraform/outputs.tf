@@ -1,5 +1,5 @@
-output "image_repo_url" {
-  value = aws_ecr_repository.image_repo.repository_url
+output "image_repo_urls" {
+  value = { for k, v in aws_ecr_repository.app_repos : k => v.repository_url }
 }
 
 output "signature_repo_url" {
