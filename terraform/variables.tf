@@ -13,7 +13,7 @@ variable "ecr_namespace" {
 variable "repository_list" {
   description = "List of application names to create repositories for"
   type        = list(string)
-  default     = ["trino"]
+  default     = ["trino", "jenkins"]
 }
 
 variable "signature_repo_name" {
