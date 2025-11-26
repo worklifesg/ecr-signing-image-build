@@ -16,7 +16,7 @@ env:
   # Terraform will automatically pick up env vars starting with TF_VAR_
   TF_VAR_admin_role_name: ${{ secrets.TF_VAR_ADMIN_ROLE_NAME }}
   TF_VAR_github_repo: ${{ vars.APP_REPO_NAME }}
-  TF_VAR_image_repo_name: ${{ vars.ECR_IMAGE_REPO }}
+  TF_VAR_ecr_namespace: ${{ vars.ECR_IMAGE_REPO }}
   TF_VAR_signature_repo_name: ${{ vars.ECR_SIG_REPO }}
 
 jobs:
