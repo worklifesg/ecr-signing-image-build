@@ -23,7 +23,7 @@ To run the pipelines successfully, configure the following in your GitHub Reposi
 ### Variables (Settings > Secrets and variables > Actions > New repository variable)
 | Variable Name | Value Example | Description |
 |---------------|---------------|-------------|
-| `GITHUB_REPO` | `my-org/my-repo` | Your GitHub repository identifier. |
+| `APP_REPO_NAME` | `my-org/my-repo` | Your GitHub repository identifier. |
 | `ECR_IMAGE_REPO` | `my-app-images` | Name of the image repository. |
 | `ECR_SIG_REPO` | `my-app-signatures` | Name of the signature repository. |
 
@@ -80,7 +80,7 @@ Configure these secrets to allow the `deploy-infra` workflow to run:
 *   `TF_STATE_BUCKET`: S3 bucket for state.
 *   `TF_STATE_DYNAMODB_TABLE`: DynamoDB table for locking.
 *   `TF_VAR_ADMIN_ROLE_NAME`: Admin role name.
-*   `GITHUB_REPO`: Variable pointing to the **Application Repository** (e.g., `my-org/app-repo`).
+*   `APP_REPO_NAME`: Variable pointing to the **Application Repository** (e.g., `my-org/app-repo`).
 
 #### Application Repository (`app-repo`)
 Configure these secrets to allow the `build-and-sign` workflow to push and sign images:

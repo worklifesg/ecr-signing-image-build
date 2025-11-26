@@ -20,7 +20,7 @@ variable "github_repo" {
   description = "GitHub repository for the Application (format: org/repo) that will push/sign images"
   type        = string
   # Update this with your actual app repo
-  default     = "my-org/app-repo"
+  default     = "worklifesg/source-image-docker"
 }
 
 variable "secondary_region" {
