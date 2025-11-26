@@ -130,23 +130,6 @@ resource "aws_ecr_repository_policy" "image_repo_policy" {
           "ecr:ListImages",
           "ecr:DescribeImages"
         ]
-      },
-      {
-        Sid    = "DenyEveryoneElse"
-        Effect = "Deny"
-        NotPrincipal = {
-          AWS = [
-            "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
-            "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.admin_role_name}",
-            aws_iam_role.github_actions.arn
-          ]
-        }
-        Action = [
-          "ecr:PutImage",
-          "ecr:InitiateLayerUpload",
-          "ecr:UploadLayerPart",
-          "ecr:CompleteLayerUpload"
-        ]
       }
     ]
   })
@@ -179,23 +162,6 @@ resource "aws_ecr_repository_policy" "signature_repo_policy" {
           "ecr:GetRepositoryPolicy",
           "ecr:ListImages",
           "ecr:DescribeImages"
-        ]
-      },
-      {
-        Sid    = "DenyEveryoneElse"
-        Effect = "Deny"
-        NotPrincipal = {
-          AWS = [
-            "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
-            "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.admin_role_name}",
-            aws_iam_role.github_actions.arn
-          ]
-        }
-        Action = [
-          "ecr:PutImage",
-          "ecr:InitiateLayerUpload",
-          "ecr:UploadLayerPart",
-          "ecr:CompleteLayerUpload"
         ]
       }
     ]
