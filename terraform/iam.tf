@@ -71,3 +71,36 @@ resource "aws_iam_role_policy" "signing_policy" {
     ]
   })
 }
+
+# Role for GitHub Actions (Infrastructure Deployment)
+resource "aws_iam_role" "github_actions_infra" {
+  name = "github-actions-infra-deploy-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRoleWithWebIdentity"
+      Effect = "Allow"
+      Principal = {
+        Federated = data.aws_iam_openid_connect_provider.github.arn
+      }
+      Condition = {
+        StringLike = {
+          "token.actions.githubusercontent.com:sub" : "repo:${var.infra_repo}:*"
+        }
+      }
+    }]
+  })
+}
+
+# Policy for Infrastructure Deployment (Admin Access)
+# Note: In a strict environment, you would scope this down.
+# For Terraform to manage IAM, ECR, KMS, S3, DynamoDB, it effectively needs broad access.
+resource "aws_iam_role_policy_attachment" "infra_admin" {
+  role       = aws_iam_role.github_actions_infra.name
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+}
+
+output "infra_deploy_role_arn" {
+  value = aws_iam_role.github_actions_infra.arn
+}
