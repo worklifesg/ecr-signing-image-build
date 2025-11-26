@@ -4,10 +4,16 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
-variable "image_repo_name" {
-  description = "Name of the ECR repository for images"
+variable "ecr_namespace" {
+  description = "Namespace prefix for ECR repositories"
   type        = string
   default     = "my-app-images"
+}
+
+variable "repository_list" {
+  description = "List of application names to create repositories for"
+  type        = list(string)
+  default     = ["trino"]
 }
 
 variable "signature_repo_name" {

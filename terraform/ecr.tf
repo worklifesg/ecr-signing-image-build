@@ -1,6 +1,7 @@
-# 1. Repository for Images
-resource "aws_ecr_repository" "image_repo" {
-  name                 = var.image_repo_name
+# 1. Repository for Images (Dynamic List)
+resource "aws_ecr_repository" "app_repos" {
+  for_each             = toset(var.repository_list)
+  name                 = "${var.ecr_namespace}/${each.key}"
   image_tag_mutability = "IMMUTABLE"
 
   image_scanning_configuration {
@@ -8,7 +9,7 @@ resource "aws_ecr_repository" "image_repo" {
   }
 }
 
-# 2. Repository for Signatures (Separate)
+# 2. Repository for Signatures (Separate - Centralized)
 resource "aws_ecr_repository" "signature_repo" {
   name                 = var.signature_repo_name
   image_tag_mutability = "IMMUTABLE"
@@ -16,7 +17,8 @@ resource "aws_ecr_repository" "signature_repo" {
 
 # Lifecycle Policy for Images
 resource "aws_ecr_lifecycle_policy" "image_policy" {
-  repository = aws_ecr_repository.image_repo.name
+  for_each   = aws_ecr_repository.app_repos
+  repository = each.value.name
 
   policy = jsonencode({
     rules = [
@@ -35,10 +37,10 @@ resource "aws_ecr_lifecycle_policy" "image_policy" {
       },
       {
         rulePriority = 2
-        description  = "Keep last 30 CI builds (prefixed with ci-)"
+        description  = "Keep last 30 CI builds (prefixed with my-app-)"
         selection = {
           tagStatus     = "tagged"
-          tagPrefixList = ["ci-"]
+          tagPrefixList = ["my-app-"]
           countType     = "imageCountMoreThan"
           countNumber   = 30
         }
@@ -84,7 +86,7 @@ resource "aws_ecr_replication_configuration" "replication" {
         registry_id = data.aws_caller_identity.current.account_id
       }
       repository_filter {
-        filter      = var.image_repo_name
+        filter      = var.ecr_namespace
         filter_type = "PREFIX_MATCH"
       }
     }
@@ -103,7 +105,8 @@ resource "aws_ecr_replication_configuration" "replication" {
 
 # 4. Repository Policies (Least Privilege)
 resource "aws_ecr_repository_policy" "image_repo_policy" {
-  repository = aws_ecr_repository.image_repo.name
+  for_each   = aws_ecr_repository.app_repos
+  repository = each.value.name
   policy     = jsonencode({
     Version = "2012-10-17"
     Statement = [
