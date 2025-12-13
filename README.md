@@ -13,7 +13,7 @@ To run the pipelines successfully, configure the following in your GitHub Reposi
 ### Secrets (Settings > Secrets and variables > Actions > New repository secret)
 | Secret Name | Description |
 |-------------|-------------|
-| `AWS_ROLE_ARN` | The ARN of the role created by Terraform for the **Build** pipeline (Output: `role_arn`). |
+| `AWS_ROLE_ARN` | The ARN of the role created by Terraform for the **Build** pipeline (Output: `role_arn`). | 
 | `KMS_KEY_ARN` | The ARN of the KMS key created by Terraform (Output: `kms_key_arn`). |
 | `AWS_TERRAFORM_ROLE_ARN` | An AWS Role ARN with Admin permissions to **deploy** the infrastructure (used by `deploy-infra.yml`). |
 | `TF_VAR_ADMIN_ROLE_NAME` | The sensitive name of your Admin role (e.g., `aws-reserved/sso...`). |
